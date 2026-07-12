@@ -5,19 +5,19 @@
 \title{Retrieve Elevation Data Along a Route}
 \usage{
 get_elevation_data(
-  name = NULL,
-  origin = "utrecht, netherlands",
+  name,
+  origin,
   destination = "chaesalp, switzerland",
   structure = "route",
-  mode = "bicycling"
+  mode = "bicycling",
+  cache_dir = "cache/elevation"
 )
 }
 \arguments{
 \item{name}{Character string identifying the route (e.g. a persons name). The value is
 included in the output data frame.}
 
-\item{origin}{Character string specifying the route starting location.
-Defaults to \code{"utrecht, netherlands"}.}
+\item{origin}{Character string specifying the route starting location.}
 
 \item{destination}{Character string specifying the route destination.
 Defaults to \code{"chaesalp, switzerland"}.}
@@ -28,6 +28,9 @@ route structure. Defaults to \code{"route"}.}
 \item{mode}{Character string specifying the travel mode used by
 \code{\link[ggmap:trek]{ggmap::trek()}}. Common options include \code{"driving"}, \code{"walking"},
 \code{"bicycling"}, and \code{"transit"}. Defaults to \code{"bicycling"}.}
+
+\item{cache_dir}{Character string specifying the directory where the elevation
+data will be cached.}
 }
 \value{
 A data frame containing:

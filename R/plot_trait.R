@@ -24,7 +24,7 @@
 #' @export
 
 plot_trait <- function(
-    data = NULL,
+    data,
     color_traits = c(Adventurer = "#D7263D",
                      Optimist = "#1B9AAA",
                      Dreamer = "#F4D35E",
@@ -73,11 +73,6 @@ plot_trait <- function(
     }) |>
     dplyr::ungroup()
 
-  d.ticks <- d.traits |>
-    dplyr::select(.data$trait) |>
-    tidyr::crossing(x = seq(0, 10, by = 2.5))
-
-
   # ------------------------------- PLOT SLIDERS -------------------------------
 
   p.sliders <- ggplot2::ggplot() +
@@ -95,13 +90,6 @@ plot_trait <- function(
                    y = .data$trait, yend = .data$trait,
                    color = .data$trait, alpha = .data$alpha),
       linewidth = 6, lineend = "round") +
-
-    # 3. add ticks
-    ggplot2::geom_segment(
-      data = d.ticks,
-      ggplot2::aes(x = .data$x, xend = .data$x,
-                   y = as.numeric(.data$trait) - 0.17, yend = as.numeric(.data$trait) - 0.10),
-      color = "grey40", linewidth = 0.6, alpha = 0.7) +
 
     # 4. add value dots
     ggplot2::geom_point(

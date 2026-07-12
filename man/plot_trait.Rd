@@ -5,7 +5,7 @@
 \title{Create Gradient Sliders for Traits}
 \usage{
 plot_trait(
-  data = NULL,
+  data,
   color_traits = c(Adventurer = "#D7263D", Optimist = "#1B9AAA", Dreamer = "#F4D35E",
     Hipster = "#6A4C93", Nerd = "#3F784C"),
   add_box = TRUE,

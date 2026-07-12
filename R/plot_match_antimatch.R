@@ -4,8 +4,8 @@
 #' (both prefixed with an emoji), each optionally enclosed in a decorative box,
 #' and combined vertically using \pkg{patchwork}.
 #'
-#' @param data Data frame including the columns "match" and "antimatch" with the
-#' names or text to display in the corresponding panels.
+#' @param name_match Character string  (e.g. Name) specifying the label for the "match" panel.
+#' @param name_antimatch Character string (e.g. Name) specifying the label for the "anti-match" panel.
 #' @param add_box Logical. If \code{TRUE} (default), a box (generated via
 #'   \code{plot_box()}) is drawn behind each label panel.
 #' @param text_color Character. Color used for the label text. Defaults to
@@ -31,33 +31,21 @@
 #' @importFrom rlang .data
 #'
 #' @export
-plot_match_antimatch <- function(data = NULL,
+plot_match_antimatch <- function(name_match,
+                                 name_antimatch,
                                  add_box = TRUE,
                                  text_color = "#235347",
                                  text_size = 15,
                                  margin_size = 10,
                                  ...) {
 
-  # ------------------------------- CHECK ARGUMENTS ----------------------------
-
-  # error if more than one row is provided
-  stopifnot(nrow(data) == 1)
-
-  # check for required columns
-  required_cols <- c("match", "antimatch")
-  if(!all(required_cols %in% names(data))) {
-    missing_traits <- setdiff(required_cols, names(data))
-    stop("Data must contain columns: ", paste(required_cols, collapse = ", "), "\n",
-         "Missing are: ", paste(missing_traits, collapse = ", ")
-         )
-  }
 
   # ---------------------------- PREPARE DATA ----------------------------------
 
   df <- data.frame(
     x = 0.5, y = 0.5,
-    label = c( paste(emoji::emoji("heart-with-arrow"), data$match),
-               paste(emoji::emoji("broken-heart"), data$antimatch)),
+    label = c( paste(emoji::emoji("heart-with-arrow"), name_match),
+               paste(emoji::emoji("broken-heart"), name_antimatch)),
     type = c("match", "antimatch")
   )
 

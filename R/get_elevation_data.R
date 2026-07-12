@@ -8,7 +8,6 @@
 #' @param name Character string identifying the route (e.g. a persons name). The value is
 #'   included in the output data frame.
 #' @param origin Character string specifying the route starting location.
-#'   Defaults to `"utrecht, netherlands"`.
 #' @param destination Character string specifying the route destination.
 #'   Defaults to `"chaesalp, switzerland"`.
 #' @param structure Character string passed to [ggmap::trek()] defining the
@@ -16,7 +15,8 @@
 #' @param mode Character string specifying the travel mode used by
 #'   [ggmap::trek()]. Common options include `"driving"`, `"walking"`,
 #'   `"bicycling"`, and `"transit"`. Defaults to `"bicycling"`.
-#'
+#' @param cache_dir Character string specifying the directory where the elevation
+#'   data will be cached.
 #'
 #' @details
 #'
@@ -66,21 +66,30 @@
 #'
 #' @export
 
-get_elevation_data <- function(name = NULL,
-                               origin = "utrecht, netherlands",
+get_elevation_data <- function(name,
+                               origin,
                                destination = "chaesalp, switzerland",
                                structure = "route",
-                               mode = 'bicycling') {
+                               mode = 'bicycling',
+                               cache_dir = "cache/elevation") {
 
-  # requires to be registered with Google via a Google Maps API key
-  # -> set in your environment variable as "GOOGLE_MAPS_KEY"
-  # -> register: ggmap::register_google(key = Sys.getenv("GOOGLE_MAPS_KEY"), write = TRUE)
+  dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
+  cache_file <- file.path(cache_dir, paste0(janitor::make_clean_names(name %||% origin), ".rds"))
 
+  if (file.exists(cache_file)) {
+    return(readRDS(cache_file)) # if data already exists in cache, return it, else -> get it!
+  }
 
   # generate route dataframe with lon/lat points
-  d.route <- ggmap::trek(origin, destination,
-                         mode = mode,
-                         structure = structure, output = 'simple')
+  d.route <- tryCatch(
+
+    ggmap::trek(origin, destination, mode = mode, structure = structure, output = "simple"),
+    error = function(e) {
+      stop(sprintf("trek() failed for '%s' (origin='%s', destination='%s'): %s",
+                   name, origin, destination, conditionMessage(e)), call. = FALSE)
+    }
+
+  )
 
   # convert to sf object with lon/lat
   d.route_sf <- sf::st_as_sf(d.route, coords = c("lon", "lat"), crs = 4326)
@@ -103,6 +112,8 @@ get_elevation_data <- function(name = NULL,
 
   d.elevation <- data.frame(
     name = name,
+    origin = origin,
+    destination = destination,
     lat = d.route$lat,
     lon = d.route$lon,
     distance = c(0, distances),
@@ -110,6 +121,7 @@ get_elevation_data <- function(name = NULL,
     elevation = elevation_df$elevation
   )
 
+  base::saveRDS(d.elevation, cache_file)
   return(d.elevation)
 
 }

@@ -5,7 +5,8 @@
 \title{Plot Match and Anti-Match Labels}
 \usage{
 plot_match_antimatch(
-  data = NULL,
+  name_match,
+  name_antimatch,
   add_box = TRUE,
   text_color = "#235347",
   text_size = 15,
@@ -14,8 +15,9 @@ plot_match_antimatch(
 )
 }
 \arguments{
-\item{data}{Data frame including the columns "match" and "antimatch" with the
-names or text to display in the corresponding panels.}
+\item{name_match}{Character string  (e.g. Name) specifying the label for the "match" panel.}
+
+\item{name_antimatch}{Character string (e.g. Name) specifying the label for the "anti-match" panel.}
 
 \item{add_box}{Logical. If \code{TRUE} (default), a box (generated via
 \code{plot_box()}) is drawn behind each label panel.}
