@@ -5,8 +5,7 @@
 \title{Plot Match and Anti-Match Labels}
 \usage{
 plot_match_antimatch(
-  name_match = NULL,
-  name_antimatch = NULL,
+  data = NULL,
   add_box = TRUE,
   text_color = "#235347",
   text_size = 15,
@@ -15,14 +14,11 @@ plot_match_antimatch(
 )
 }
 \arguments{
-\item{name_match}{Character. Name or text to display in the "match" panel.
-Defaults to \code{NULL}.}
-
-\item{name_antimatch}{Character. Name or text to display in the
-"anti-match" panel. Defaults to \code{NULL}.}
+\item{data}{Data frame including the columns "match" and "antimatch" with the
+names or text to display in the corresponding panels.}
 
 \item{add_box}{Logical. If \code{TRUE} (default), a box (generated via
-\code{box_plot()}) is drawn behind each label panel.}
+\code{plot_box()}) is drawn behind each label panel.}
 
 \item{text_color}{Character. Color used for the label text. Defaults to
 \code{"#235347"}.}
@@ -32,7 +28,7 @@ Defaults to \code{NULL}.}
 \item{margin_size}{Numeric. Plot margin (applied equally to all four sides, in
 points) for each panel. Defaults to \code{10}.}
 
-\item{...}{Additional arguments passed to \code{plot_box()} when
+\item{...}{Additional arguments passed to \code{box_box()} when
 \code{add_box = TRUE}.}
 }
 \value{
