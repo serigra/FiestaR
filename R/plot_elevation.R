@@ -6,7 +6,9 @@
 #' @param data Data frame containing the a distance and cumuluative distance ('cumulative_distance')
 #' and elevation data ('elevation').
 #' @param origin Character string specifying the route starting location.
+#' If input data contains an 'origin' column, this argument is automatically replaced.
 #' @param destination Character string specifying the route destination.
+#' If input data contains an 'destination' column, this argument is automatically replaced.
 #' @param max_ylim Numeric value setting the maximum y-axis limit for the elevation plot
 #'   in meters (default: 1100).
 #' @param add_text Logical indicating whether to add a text labels to the plot (default: TRUE).
@@ -14,6 +16,7 @@
 #' @param color_profile Character string specifying the color for the elevation profile line (default: "#235347").
 #' @param text_size Numeric value specifying the size of the text labels (default: 3.7).
 #' @param .ggplot Additional ggplot arguments.
+#' @param ... further arguments for [plot_box()] function
 #'
 #' @return ggplot object showing the elevation profile with LOESS smoothing.
 #'
@@ -21,11 +24,9 @@
 #' The function generates a visualization of the elevation profile for a specified route.
 #' It uses LOESS smoothing to create a smooth curve representing the elevation changes along the route.
 #'
-#' @note
-#' This function requires the following packages: dplyr, stringr, ggplot2, monochromeR, patchwork, ggforce, ggmap, sf, elevatr, and geosphere.
-#' A API key to the Google cloud platform is needed! see tutorial https://www.appsilon.com/post/r-ggmap.
-#' An active internet connection is required to retrieve route and elevation data.
+#' @seealso [get_elevation_data()]
 #'
+#' @importFrom rlang .data
 #'
 #' @export
 
@@ -49,8 +50,7 @@ plot_elevation <- function(data,
    # ---------------------------- PREPARE LABELS -------------------------------
 
    if(base::all(c("origin", "destination") %in% names(data))) {
-     message("Data frame contains 'origin' and 'destination' columns
-             -> overwrites 'origin' and 'destination' arguments.")
+     message("Data frame contains 'origin' and 'destination' columns -> overwrites 'origin' and 'destination' arguments.")
      origin <- data$origin[1]
      destination <- data$destination[1]
    }
@@ -74,7 +74,9 @@ plot_elevation <- function(data,
   # ---------------------------- PLOT ELEVATION PROFILE ------------------------
 
   p.elevation <-
-    ggplot2::ggplot(data, ggplot2::aes(x = cumulative_distance, y = elevation)) +
+    ggplot2::ggplot(data,
+                    ggplot2::aes(x = .data$cumulative_distance,
+                                 y = .data$elevation)) +
     ggplot2::geom_smooth(method = "loess", se = FALSE, span = 0.1, color = color_profile, linewidth = 1) +
     .theme.default +
     .ggplot
@@ -85,22 +87,26 @@ plot_elevation <- function(data,
   if(add_text){
 
     range_elevation <- data |>
-      dplyr::summarise(min_elev = min(elevation),
-                max_elev = max(elevation),
-                plot_min = min_elev - 0.18 * (max_elev - min_elev),
-                plot_max = max_elev + 0.8 * (max_elev - min_elev))
+      dplyr::summarise(
+                min_elev = min(.data$elevation),
+                max_elev = max(.data$elevation)
+                ) |>
+      dplyr::mutate(
+                plot_min = .data$min_elev - 0.18 * (.data$max_elev - .data$min_elev),
+                plot_max = .data$max_elev + 0.8 * (.data$max_elev - .data$min_elev)
+                )
 
     p.elevation <- p.elevation +
-      ggplot2::geom_text(data = data |> dplyr::filter(distance == 0),
-                         ggplot2::aes(x = distance,
-                                      y = elevation,
-                                      label = paste0(origin_label, '\n', round(elevation), ' m')),
+      ggplot2::geom_text(data = data |> dplyr::filter(.data$distance == 0),
+                         ggplot2::aes(x = .data$distance,
+                                      y = .data$elevation,
+                                      label = paste0(origin_label, '\n', round(.data$elevation), ' m')),
                                       vjust = -0.3 , hjust = 0.1,
                                       color = color_profile, size = text_size) +
-      ggplot2::geom_text(data = data |> tail(1),
-                         ggplot2::aes(x = cumulative_distance,
-                                      y = elevation,
-                                      label = paste0(destination_label, '\n', round(elevation), ' m')),
+      ggplot2::geom_text(data = data |> utils::tail(1),
+                         ggplot2::aes(x = .data$cumulative_distance,
+                                      y = .data$elevation,
+                                      label = paste0(destination_label, '\n', round(.data$elevation), ' m')),
                                       vjust = -0.3 , hjust = 0.8,
                                       color = color_profile, size = text_size) +
       ggplot2::ylim(range_elevation$plot_min, range_elevation$plot_max) +
@@ -115,7 +121,7 @@ plot_elevation <- function(data,
     p.box <- plot_box(...)
 
     # calculate elevation difference between start and end point
-    delta_elevation <- tail(data$elevation, 1) - head(data$elevation, 1)
+    delta_elevation <- utils::tail(data$elevation, 1) - utils::head(data$elevation, 1)
     delta_elevation <- paste0(delta_elevation, " m")
 
     color_profile_dark <- monochromeR::generate_palette(color_profile,

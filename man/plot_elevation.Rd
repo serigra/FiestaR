@@ -21,9 +21,11 @@ plot_elevation(
 \item{data}{Data frame containing the a distance and cumuluative distance ('cumulative_distance')
 and elevation data ('elevation').}
 
-\item{origin}{Character string specifying the route starting location.}
+\item{origin}{Character string specifying the route starting location.
+If input data contains an 'origin' column, this argument is automatically replaced.}
 
-\item{destination}{Character string specifying the route destination.}
+\item{destination}{Character string specifying the route destination.
+If input data contains an 'destination' column, this argument is automatically replaced.}
 
 \item{max_ylim}{Numeric value setting the maximum y-axis limit for the elevation plot
 in meters (default: 1100).}
@@ -37,6 +39,8 @@ in meters (default: 1100).}
 \item{text_size}{Numeric value specifying the size of the text labels (default: 3.7).}
 
 \item{.ggplot}{Additional ggplot arguments.}
+
+\item{...}{further arguments for \code{\link[=plot_box]{plot_box()}} function}
 }
 \value{
 ggplot object showing the elevation profile with LOESS smoothing.
@@ -49,8 +53,6 @@ two locations.
 The function generates a visualization of the elevation profile for a specified route.
 It uses LOESS smoothing to create a smooth curve representing the elevation changes along the route.
 }
-\note{
-This function requires the following packages: dplyr, stringr, ggplot2, monochromeR, patchwork, ggforce, ggmap, sf, elevatr, and geosphere.
-A API key to the Google cloud platform is needed! see tutorial https://www.appsilon.com/post/r-ggmap.
-An active internet connection is required to retrieve route and elevation data.
+\seealso{
+\code{\link[=get_elevation_data]{get_elevation_data()}}
 }

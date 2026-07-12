@@ -92,7 +92,7 @@ get_elevation_data <- function(name = NULL,
   elevation_df <- cbind(d.route, elevation = elevation_points$elevation)
 
   # replace elevation for Chaesalp
-  if(grepl("chaesalp|chäsalp", tolower(destination))) {
+  if(grepl("chaesalp|ch.salp", tolower(destination))) {
     elevation_df$elevation[nrow(elevation_df)] <- 617
   }
 
