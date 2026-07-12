@@ -2,69 +2,70 @@
 #'
 #' Generates a visualization of five character traits (Strength, Intelligence,
 #' Agility, Charisma, Endurance) with gradient-colored horizontal sliders showing
-#' random values from 0 to 10. Optionally adds a decorative box around the plot.
+#' the corresponding values from 0 to 10. Optionally adds a decorative box around the plot.
 #'
-#' @param data data for a single guest including the values of the 5 traits.
-#' Each trait corresponds to a separate column in the data.
-#' @param color_traits A character vector of length 5 specifying the colors for
-#'   each trait. Default colors are: red ("#D7263D") for Strength, teal
-#'   ("#1B9AAA") for Intelligence, yellow ("#F4D35E") for Agility, purple
-#'   ("#6A4C93") for Charisma, and green ("#3F784C") for Endurance.
+#' @param data Data for a single person including the name of the person as well
+#' as the 5 traits in separate columns. Trait values range between 0 and 10.
+#' @param color_traits A named character vector of length 5 specifying the colors for
+#'   each trait. Default colors are: red ("#D7263D") for Adventurer, teal
+#'   ("#1B9AAA") for Optimist, yellow ("#F4D35E") for Dreamer, purple
+#'   ("#6A4C93") for Hipster, and green ("#3F784C") for Nerd.
 #' @param add_box Logical. If \code{TRUE} (default), wraps the plot in a
-#'   decorative box using \code{box_plot()}.
-#' @param box_color Character string specifying the color of the box border.
-#'   Default is "darkgrey". Only used when \code{add_box = TRUE}.
-#' @param box_background Character string specifying the background color of
-#'   the box. Default is "#f8f8f6" (light grey). Only used when
+#'   decorative box using \code{plot_box()}.
+#' @param ... Additional arguments passed to \code{box_plot()} when
 #'   \code{add_box = TRUE}.
-#' @param box_linewidth_cm Numeric value specifying the line width of the box border in centimeters.
 #'
-#' @return A ggplot2 object (or patchwork composition if \code{add_box = TRUE})
+#' @return A \pkg{ggplot2} object (or patchwork composition if \code{add_box = TRUE})
 #'   displaying horizontal slider-style bars for each trait with gradient
 #'   coloring, tick marks, and value labels.
 #'
-#' @details
-#' Requires the \code{box_plot()} function to be available when \code{add_box = TRUE}.
-#'
-#' @examples
-#' # Basic trait plot with default settings
-#' trait_plot()
-#'
-#' # Custom colors without box
-#' trait_plot(
-#'   color_traits = c("red", "blue", "green", "orange", "purple"),
-#'   add_box = FALSE
-#' )
-#'
-#' # Custom box styling
-#' trait_plot(color_box = "black", background_box = "#ffffff")
+#' @importFrom rlang .data
 #'
 #' @export
 
-
 plot_trait <- function(
     data = NULL,
-    color_traits = c("#D7263D", "#1B9AAA", "#F4D35E", "#6A4C93", "#3F784C"),
+    color_traits = c(Adventurer = "#D7263D",
+                     Optimist = "#1B9AAA",
+                     Dreamer = "#F4D35E",
+                     Hipster = "#6A4C93",
+                     Nerd = "#3F784C"),
     add_box = TRUE,
-    box_linewidth_cm = 0.1,
-    box_color = "darkgrey",
-    box_background = "#f8f8f6"
+    ...
   ){
 
-  # data: wide to long format
-  traits <- data |>
-    pivot_longer(cols = -`Name`, names_to = 'trait') |>
-    dplyr::mutate(color = color_traits)
+  # ------------------------------- CHECK ARGUMENTS ----------------------------
 
+  # error if more than one row is provided
+  stopifnot(nrow(data) == 1)
+
+  # data: wide to long format
+  trait_names <- names(data)[names(data) != "Name"]
+
+  # check whether color_traits is a named vector
+  if(!all(attributes(color_traits)$names %in% trait_names)) {
+    missing_traits <- setdiff(names(color_traits), trait_names)
+    stop(
+      "color_traits must be a named vector with names matching trait names in the input data.\n ",
+      "Trait names in input data: ", paste(trait_names, collapse = ", "), ".\n",
+      "Unknown trait(s) in color_traits: ", paste(missing_traits, collapse = ", ")
+    )
+  }
 
   # ------------------------------ PREPARE DATA --------------------------------
 
-  bar_segments <- traits |>
+  d.traits <- data |>
+    tidyr::pivot_longer(cols = -.data$Name, names_to = 'trait') |>
+    dplyr::mutate(
+      trait = factor(.data$trait, levels = trait_names)
+    )
+
+  d.bar_segments <- d.traits |>
     dplyr::rowwise() |>
     dplyr::do({
-      value <- .$value
+      value <- .data$value
       data.frame(
-        trait = .$trait,
+        trait = .data$trait,
         x = seq(0, value - 0.1, by = 0.1),
         xend = seq(0.1, value, by = 0.1),
         alpha = seq(0.1, value, by = 0.1) / 10
@@ -72,49 +73,51 @@ plot_trait <- function(
     }) |>
     dplyr::ungroup()
 
-  tick_positions <- seq(0, 10, by = 2.5)
-
-  ticks <- traits |>
-    dplyr::select(trait) |>
-    tidyr::crossing(x = tick_positions)
+  d.ticks <- d.traits |>
+    dplyr::select(.data$trait) |>
+    tidyr::crossing(x = seq(0, 10, by = 2.5))
 
 
   # ------------------------------- PLOT SLIDERS -------------------------------
 
-  plot_sliders <- ggplot2::ggplot() +
+  p.sliders <- ggplot2::ggplot() +
 
     # 1. grey background bars (full length)
     ggplot2::geom_segment(
-      data = traits,
-      ggplot2::aes(x = 0, xend = 10, y = trait, yend = trait),
+      data = d.traits,
+      ggplot2::aes(x = 0, xend = 10, y = .data$trait, yend = .data$trait),
       linewidth = 7.5, color = "grey80", lineend = "round") +
 
-    # d. colored gradient bars (only until value)
+    # 2. colored gradient bars (only until value)
     ggplot2::geom_segment(
-      data = bar_segments,
-      ggplot2::aes(x = x, xend = xend, y = trait, yend = trait, color = trait, alpha = alpha),
+      data = d.bar_segments,
+      ggplot2::aes(x = .data$x, xend = .data$xend,
+                   y = .data$trait, yend = .data$trait,
+                   color = .data$trait, alpha = .data$alpha),
       linewidth = 6, lineend = "round") +
 
     # 3. add ticks
     ggplot2::geom_segment(
-      data = ticks,
-      ggplot2::aes(x = x, xend = x, y = as.numeric(trait) - 0.17, yend = as.numeric(trait) - 0.10),
+      data = d.ticks,
+      ggplot2::aes(x = .data$x, xend = .data$x,
+                   y = as.numeric(.data$trait) - 0.17, yend = as.numeric(.data$trait) - 0.10),
       color = "grey40", linewidth = 0.6, alpha = 0.7) +
 
     # 4. add value dots
     ggplot2::geom_point(
-      data = traits,
-      ggplot2::aes(x = value, y = trait),
+      data = d.traits,
+      ggplot2::aes(x = .data$value, y = .data$trait),
       shape = 21, size = 6, stroke = 1.6, color = "grey50", fill = "grey80") +
 
     # 5. add text to value dot
     ggplot2::geom_text(
-      data = traits,
-      ggplot2::aes(x = value, y = trait, label = round(value, 1), color = trait),
+      data = d.traits,
+      ggplot2::aes(x = .data$value, y = .data$trait,
+                   label = round(.data$value, 1), color = .data$trait),
       vjust = 0.4, hjust = -2.4, size = 3.7, fontface = "bold") +
 
     # colors & format
-    ggplot2::scale_color_manual(values = traits$color) +
+    ggplot2::scale_color_manual(values = color_traits) +
     ggplot2::scale_alpha_continuous(range = c(0.05, 1)) +
     ggplot2::labs(x = NULL, y = NULL) +
     ggplot2::coord_cartesian(clip = "off") +
@@ -131,15 +134,13 @@ plot_trait <- function(
 
   if(add_box){
 
-    plot_box <- box_plot(box_color = box_color,
-                         box_background = box_background,
-                         box_linewidth_cm = box_linewidth_cm)
+    p.box <- plot_box(...)
 
-    plot_sliders <- plot_box +
-      patchwork::inset_element(plot_sliders, left = 0.04, bottom = 0, right = 0.96, top = 1)
+    p.sliders <- p.box +
+      patchwork::inset_element(p.sliders, left = 0.04, bottom = 0, right = 0.96, top = 1)
 
   }
 
-  return(plot_sliders)
+  return(p.sliders)
 
 }

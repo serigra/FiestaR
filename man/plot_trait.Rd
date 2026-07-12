@@ -6,19 +6,20 @@
 \usage{
 plot_trait(
   data = NULL,
-  color_traits = c("#D7263D", "#1B9AAA", "#F4D35E", "#6A4C93", "#3F784C"),
+  color_traits = c(Adventurer = "#D7263D", Optimist = "#1B9AAA", Dreamer = "#F4D35E",
+    Hipster = "#6A4C93", Nerd = "#3F784C"),
   add_box = TRUE,
   ...
 )
 }
 \arguments{
-\item{data}{data for a single guest including the values of the 5 traits.
-Each trait corresponds to a separate column in the data.}
+\item{data}{Data for a single person including the name of the person as well
+as the 5 traits in separate columns. Trait values range between 0 and 10.}
 
-\item{color_traits}{A character vector of length 5 specifying the colors for
-each trait. Default colors are: red ("#D7263D") for Strength, teal
-("#1B9AAA") for Intelligence, yellow ("#F4D35E") for Agility, purple
-("#6A4C93") for Charisma, and green ("#3F784C") for Endurance.}
+\item{color_traits}{A named character vector of length 5 specifying the colors for
+each trait. Default colors are: red ("#D7263D") for Adventurer, teal
+("#1B9AAA") for Optimist, yellow ("#F4D35E") for Dreamer, purple
+("#6A4C93") for Hipster, and green ("#3F784C") for Nerd.}
 
 \item{add_box}{Logical. If \code{TRUE} (default), wraps the plot in a
 decorative box using \code{plot_box()}.}
