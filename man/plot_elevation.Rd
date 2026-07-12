@@ -8,10 +8,10 @@ plot_elevation(
   data,
   origin = "Origin",
   destination = "Destination",
+  color_profile = "#235347",
   max_ylim = 1100,
   add_text = TRUE,
   add_box = TRUE,
-  color_profile = "#235347",
   text_size = 3.7,
   .ggplot = NULL,
   ...
@@ -27,14 +27,14 @@ If input data contains an 'origin' column, this argument is automatically replac
 \item{destination}{Character string specifying the route destination.
 If input data contains an 'destination' column, this argument is automatically replaced.}
 
+\item{color_profile}{Character string specifying the color for the elevation profile line (default: "#235347").}
+
 \item{max_ylim}{Numeric value setting the maximum y-axis limit for the elevation plot
 in meters (default: 1100).}
 
 \item{add_text}{Logical indicating whether to add a text labels to the plot (default: TRUE).}
 
 \item{add_box}{Logical indicating whether to add a box around the plot (default: TRUE).}
-
-\item{color_profile}{Character string specifying the color for the elevation profile line (default: "#235347").}
 
 \item{text_size}{Numeric value specifying the size of the text labels (default: 3.7).}
 

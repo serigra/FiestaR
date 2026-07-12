@@ -3,24 +3,28 @@
 #' This function creates a simple box visualization using ggplot2 with a
 #' rounded rectangle shape and customizable colors for the box and background.
 #'
-#' @param color_box Character string specifying the color of the box.
+#' @param box_color Character string specifying the color of the box.
 #'   Default is "darkgrey".
-#' @param background_box Character string specifying the background color
+#' @param box_background Character string specifying the background color
 #'   of the box. Default is "#f8f8f6" (light grey).
+#' @param box_linewidth_cm Linewidth of box in cm.
 #'
 #' @return A ggplot object containing a box plot with rounded corners.
 #'
+#' @keywords internal
+#'
 #' @examples
-#' # Create a box with default colors
+#' \dontrun{
 #' plot_box()
+#' }
 #'
 #' # Create a box with custom colors
-#' plot_box(color_box = "steelblue", background_box = "white")
+#' \dontrun{
+#' plot_box(box_color = "steelblue",
+#'          box_background = "white",
+#'          box_linewidth_cm = 0.01)
+#' }
 #'
-#' @importFrom ggplot2 ggplot aes geom_polygon theme_void theme margin
-#' @importFrom ggforce geom_shape
-#'
-#' @export
 plot_box <- function(box_color = "darkgrey",
                      box_background = "#f8f8f6",
                      box_linewidth_cm = 0.1){
@@ -30,7 +34,7 @@ plot_box <- function(box_color = "darkgrey",
     y = c(0, 0, 1, 1)
   )
 
-  plot_box <- ggplot2::ggplot(box_shape, ggplot2::aes(x = x, y = y)) +
+  plot_box <- ggplot2::ggplot(box_shape, ggplot2::aes(x = .data$x, y = .data$y)) +
     ggforce::geom_shape(expand = ggplot2::unit(box_linewidth_cm, 'cm'),
                         radius = ggplot2::unit(box_linewidth_cm * 10, 'cm'),
                         fill = box_color) +

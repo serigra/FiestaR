@@ -33,10 +33,10 @@
 plot_elevation <- function(data,
                            origin = "Origin",
                            destination = "Destination",
+                           color_profile = "#235347",
                            max_ylim = 1100,
                            add_text = TRUE,
                            add_box = TRUE,
-                           color_profile = "#235347",
                            text_size = 3.7,
                            .ggplot = NULL,
                            ...

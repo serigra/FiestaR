@@ -7,7 +7,7 @@
 get_elevation_data(
   name,
   origin,
-  destination = "chaesalp, switzerland",
+  destination = "Chäsalp, Switzerland",
   structure = "route",
   mode = "bicycling",
   cache_dir = "cache/elevation"

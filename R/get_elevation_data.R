@@ -68,7 +68,7 @@
 
 get_elevation_data <- function(name,
                                origin,
-                               destination = "chaesalp, switzerland",
+                               destination = "Chäsalp, Switzerland",
                                structure = "route",
                                mode = 'bicycling',
                                cache_dir = "cache/elevation") {
@@ -95,7 +95,14 @@ get_elevation_data <- function(name,
   d.route_sf <- sf::st_as_sf(d.route, coords = c("lon", "lat"), crs = 4326)
 
   # get elevation data for these points
-  elevation_points <- elevatr::get_elev_point(d.route_sf, src = "aws")
+  elevation_points <- tryCatch(
+
+    elevatr::get_elev_point(d.route_sf, src = "aws"),
+    error = function(e) {
+      stop(sprintf("get_elev_point() failed for '%s': %s", name, conditionMessage(e)), call. = FALSE)
+    }
+
+  )
 
   # combine elevation points to a dataframe
   elevation_df <- cbind(d.route, elevation = elevation_points$elevation)

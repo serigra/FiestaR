@@ -6,10 +6,11 @@
 #'
 #' @param data Data for a single person including the name of the person as well
 #' as the 5 traits in separate columns. Trait values range between 0 and 10.
-#' @param color_traits A named character vector of length 5 specifying the colors for
+#' @param trait_color A named character vector of length 5 specifying the colors for
 #'   each trait. Default colors are: red ("#D7263D") for Adventurer, teal
 #'   ("#1B9AAA") for Optimist, yellow ("#F4D35E") for Dreamer, purple
 #'   ("#6A4C93") for Hipster, and green ("#3F784C") for Nerd.
+#' @param trait_size Numeric value controlling the size of the trait labels. Default is 14.
 #' @param add_box Logical. If \code{TRUE} (default), wraps the plot in a
 #'   decorative box using \code{plot_box()}.
 #' @param ... Additional arguments passed to \code{box_plot()} when
@@ -25,11 +26,12 @@
 
 plot_trait <- function(
     data,
-    color_traits = c(Adventurer = "#D7263D",
+    trait_color = c(Adventurer = "#D7263D",
                      Optimist = "#1B9AAA",
                      Dreamer = "#F4D35E",
                      Hipster = "#6A4C93",
                      Nerd = "#3F784C"),
+    trait_size = 14,
     add_box = TRUE,
     ...
   ){
@@ -40,22 +42,22 @@ plot_trait <- function(
   stopifnot(nrow(data) == 1)
 
   # data: wide to long format
-  trait_names <- names(data)[names(data) != "Name"]
+  trait_names <- names(data)[names(data) != "name"]
 
   # check whether color_traits is a named vector
-  if(!all(attributes(color_traits)$names %in% trait_names)) {
-    missing_traits <- setdiff(names(color_traits), trait_names)
+  if(!all(attributes(trait_color)$names %in% trait_names)) {
+    missing_traits <- setdiff(names(trait_color), trait_names)
     stop(
       "color_traits must be a named vector with names matching trait names in the input data.\n ",
       "Trait names in input data: ", paste(trait_names, collapse = ", "), ".\n",
-      "Unknown trait(s) in color_traits: ", paste(missing_traits, collapse = ", ")
+      "Unknown trait(s) in trait_color: ", paste(missing_traits, collapse = ", ")
     )
   }
 
   # ------------------------------ PREPARE DATA --------------------------------
 
   d.traits <- data |>
-    tidyr::pivot_longer(cols = -.data$Name, names_to = 'trait') |>
+    tidyr::pivot_longer(cols = -.data$name, names_to = 'trait') |>
     dplyr::mutate(
       trait = factor(.data$trait, levels = trait_names)
     )
@@ -105,11 +107,11 @@ plot_trait <- function(
       vjust = 0.4, hjust = -2.4, size = 3.7, fontface = "bold") +
 
     # colors & format
-    ggplot2::scale_color_manual(values = color_traits) +
+    ggplot2::scale_color_manual(values = trait_color) +
     ggplot2::scale_alpha_continuous(range = c(0.05, 1)) +
     ggplot2::labs(x = NULL, y = NULL) +
     ggplot2::coord_cartesian(clip = "off") +
-    ggplot2::theme_minimal(base_size = 14) +
+    ggplot2::theme_minimal(base_size = trait_size) +
     ggplot2::theme(
       legend.position = "none",
       panel.grid = ggplot2::element_blank(),
