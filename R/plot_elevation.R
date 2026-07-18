@@ -30,7 +30,7 @@
 #'
 #' @export
 
-plot_elevation <- function(data,
+plot_elevation <- function(data = NULL,
                            origin = "Origin",
                            destination = "Destination",
                            color_profile = "#235347",
@@ -41,6 +41,33 @@ plot_elevation <- function(data,
                            .ggplot = NULL,
                            ...
                            ) {
+
+  # ------------------------- if elevation data is MISSING ---------------------
+
+  if (is.na(data)) {
+
+    img_path <- system.file("images", "flight.png", package = "FiestaR")
+
+    img <- png::readPNG(img_path)
+
+    img_grob <- grid::rasterGrob(img, interpolate = TRUE)
+
+    p.flight <- ggplot2::ggplot() +
+      ggplot2::annotation_custom(img_grob) +
+      ggplot2::theme_void() +
+      ggplot2::theme(plot.background = ggplot2::element_rect(fill = "transparent", color = NA))
+
+    if (add_box) {
+      p.box <- plot_box(...)
+      p.placeholder <- p.box +
+        patchwork::inset_element(p.flight,
+                                 left = 0.1, bottom = 0,
+                                 right = 0.9, top = 1)
+    }
+
+    return(p.placeholder)
+  }
+
 
 
     if(!base::all(c("distance", "cumulative_distance", "elevation") %in% names(data))) {

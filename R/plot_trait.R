@@ -12,7 +12,8 @@
 #'   ("#1B9AAA") for Optimist, yellow ("#F4D35E") for Dreamer, purple
 #'   ("#6A4C93") for Hipster, and green ("#3F784C") for Nerd.
 #' @param trait_size Numeric value controlling the size of the trait labels.
-#' @param trait_font Character string specifying the font family for the trait labels.
+#' @param trait_text_font Character string specifying the font family for the trait labels.
+#' @param trait_text_color Character string specifying the color for the trait labels.
 #' @param trait_point_color Color for the point indicating the trait value.
 #' @param trait_value_color Color for the text label on the point indicating the trait value.
 #' @param add_box Logical. If \code{TRUE} (default), wraps the plot in a
@@ -38,7 +39,8 @@ plot_trait <- function(
                      Nerd = "#3F784C"),
     trait_point_color = "#235347",
     trait_value_color = "white",
-    trait_font = "quicksand",
+    trait_text_font = "quicksand",
+    trait_text_color = "#235347",
     trait_size = 14,
     add_box = TRUE,
     ...
@@ -123,21 +125,21 @@ plot_trait <- function(
     ggplot2::geom_point(
       data = d.traits,
       ggplot2::aes(x = .data$value, y = .data$trait),
-      shape = 21, size = 7, stroke = 1.6, fill = trait_point_color, color = "white" #, fill = "grey80"
+      shape = 21, size = 12, stroke = 1.6, fill = trait_point_color, color = "white" #, fill = "grey80"
       ) +
 
     # 5. add text to value dot
     ggplot2::geom_text(
       data = d.traits,
       ggplot2::aes(x = .data$value, y = .data$trait,
-                   label = round(.data$value, 1)#, color = .data$trait
+                   label = paste0(round(.data$value, 1), '0%')#, color = .data$trait
                    ),
-      vjust = 0.5, hjust = 0.55, size = 3.2, fontface = "bold", color = trait_value_color)
+      vjust = 0.5, hjust = 0.50, size = 3.2, fontface = "bold", color = trait_value_color)
 
     # 6.  overlay mean diamonds, if supplied
     if (!is.null(trait_mean)) {
 
-      col_dot <-monochromeR::generate_palette("#235347", "go_lighter", 5)[4]
+      col_dot <-monochromeR::generate_palette("#235347", "go_lighter", 5)[2]
 
       p.sliders <- p.sliders +
       ggplot2::geom_point(
@@ -179,7 +181,8 @@ plot_trait <- function(
       panel.background = ggplot2::element_rect(fill = "transparent", color = NA),
       plot.background = ggplot2::element_rect(fill = "transparent", color = NA),
       panel.grid = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(face = "bold", family = trait_font),
+      axis.text.y = ggplot2::element_text(face = "bold", color = trait_text_color,
+                                          family = trait_text_font),
       axis.text.x = ggplot2::element_blank(),
       plot.margin = ggplot2::margin(10, 15, 10, 15)
     )

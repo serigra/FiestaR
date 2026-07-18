@@ -9,7 +9,8 @@ plot_box(
   box_background = "#f8f8f6",
   box_linewidth = 2,
   box_radius = 0.1,
-  box_expand = 0.02
+  box_expand = 0.02,
+  box_outer_margin = 3
 )
 }
 \arguments{
@@ -24,6 +25,8 @@ of the box. Default is "#f8f8f6" (light grey).}
 \item{box_radius}{Radius of rounded corners.}
 
 \item{box_expand}{Expansion of box.}
+
+\item{box_outer_margin}{Margin around the box.}
 }
 \value{
 A ggplot object containing a box plot with rounded corners.

@@ -5,7 +5,7 @@
 \title{Plot Elevation Profile}
 \usage{
 plot_elevation(
-  data,
+  data = NULL,
   origin = "Origin",
   destination = "Destination",
   color_profile = "#235347",

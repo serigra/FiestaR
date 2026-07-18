@@ -10,6 +10,7 @@
 #' @param box_linewidth Linewidth of box.
 #' @param box_radius Radius of rounded corners.
 #' @param box_expand Expansion of box.
+#' @param box_outer_margin Margin around the box.
 #'
 #' @return A ggplot object containing a box plot with rounded corners.
 #'
@@ -31,7 +32,8 @@ plot_box <- function(box_color = "darkgrey",
                      box_background = "#f8f8f6",
                      box_linewidth = 2,
                      box_radius = 0.1,
-                     box_expand = 0.02){
+                     box_expand = 0.02,
+                     box_outer_margin = 3){
 
   box_shape <- data.frame(
     x = c(0, 1, 1, 0),
@@ -46,7 +48,10 @@ plot_box <- function(box_color = "darkgrey",
                         color = box_color,
                         fill = box_background) +
     ggplot2::theme_void() +
-    ggplot2::theme(plot.margin = ggplot2::margin(3, 3, 3, 3))
+    ggplot2::theme(plot.margin = ggplot2::margin(box_outer_margin,
+                                                 box_outer_margin,
+                                                 box_outer_margin,
+                                                 box_outer_margin))
 
   return(plot_box)
 

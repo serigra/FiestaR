@@ -11,7 +11,8 @@ plot_trait(
     Hipster = "#6A4C93", Nerd = "#3F784C"),
   trait_point_color = "#235347",
   trait_value_color = "white",
-  trait_font = "quicksand",
+  trait_text_font = "quicksand",
+  trait_text_color = "#235347",
   trait_size = 14,
   add_box = TRUE,
   ...
@@ -32,7 +33,9 @@ each trait. Default colors are: red ("#D7263D") for Adventurer, teal
 
 \item{trait_value_color}{Color for the text label on the point indicating the trait value.}
 
-\item{trait_font}{Character string specifying the font family for the trait labels.}
+\item{trait_text_font}{Character string specifying the font family for the trait labels.}
+
+\item{trait_text_color}{Character string specifying the color for the trait labels.}
 
 \item{trait_size}{Numeric value controlling the size of the trait labels.}
 

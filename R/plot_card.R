@@ -57,7 +57,9 @@ plot_card <- function(data,
     data = data[, c("name", trait_cols)],
     trait_mean = trait_mean,
     trait_color = style$trait_color,
-    trait_font = style$name_font,
+    trait_text_font = style$name_font,
+    trait_text_color = style$accent_color,
+    trait_size = style$trait_size,
     trait_value_color = style$value_color,
     trait_point_color = style$trait_point_color,
     add_box = style$add_box,
@@ -68,10 +70,10 @@ plot_card <- function(data,
 
   # ---------------------------- PLOT MATCH & ANTI-MATCH -----------------------
 
-  heart_path <- "inst/images/heart.png"
-  broken_heart_path <- "inst/images/broken_heart.png"
+  heart_path <- "inst/images/heart_green.png"
+  broken_heart_path <- "inst/images/Broken-heart.png"
 
-  p.match <- plot_name(name = paste0(" <img src='", heart_path, "' width='30'/>", data$match),
+  p.match <- plot_name(name = paste0(" <img src='", heart_path, "' width='20'/>  ", data$match),
                        name_color = style$accent_color,
                        name_size = style$match_size,
                        name_font = style$name_font,
@@ -81,7 +83,7 @@ plot_card <- function(data,
                        box_linewidth = style$box_linewidth,
                        box_radius = style$box_radius_names)
 
-  p.antimatch <- plot_name(name = paste0(" <img src='", broken_heart_path, "' width='30'/>", data$antimatch),
+  p.antimatch <- plot_name(name = paste0(" <img src='", broken_heart_path, "' width='23'/>  ", data$antimatch),
                            name_color = style$accent_color,
                            name_size = style$match_size,
                            name_font = style$name_font,
@@ -95,7 +97,7 @@ plot_card <- function(data,
     patchwork::plot_layout(heights = ggplot2::unit(c(1, 1), c("null")))
 
 
-  # ----------------------- FINAL PLOT with backgroudn -------------------------
+  # ----------------------- FINAL PLOT with backgroun -------------------------
 
   p.card <- p.name / p.elev / p.traits / p.match.antimatch +
     patchwork::plot_layout(heights = ggplot2::unit(c(1.5, 2, 5.25, 2.25), "null")) +
@@ -108,6 +110,11 @@ plot_card <- function(data,
       )
     )
 
-  p.card
+  p.outbox <- plot_box(box_color = style$accent_color,
+                       box_background = style$accent_color,
+                       box_radius = 0.05)
+
+  p.outbox +  # put p.name exactly in the middle of the box
+    patchwork::inset_element(p.card, left = 0.02, bottom = 0.05, right = 0.98, top = 0.95)
 
 }
