@@ -42,11 +42,11 @@ plot_name <- function(name,
                       ...){
 
   p.name <- ggplot2::ggplot() +
-    ggplot2::geom_text(
+    ggtext::geom_richtext(
                        ggplot2::aes(x = 0.5, y = 0.5, label = name),
                        size = name_size, color = name_color,
                        family   = name_font,
-                       fontface = "bold") +
+                       fontface = "bold",fill = NA, label.color = NA) +
     ggplot2::xlim(0, 1) +
     ggplot2::ylim(0, 1) +
     ggplot2::theme_void() +

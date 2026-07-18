@@ -57,6 +57,7 @@ plot_card <- function(data,
     data = data[, c("name", trait_cols)],
     trait_mean = trait_mean,
     trait_color = style$trait_color,
+    trait_font = style$name_font,
     trait_value_color = style$value_color,
     trait_point_color = style$trait_point_color,
     add_box = style$add_box,
@@ -67,7 +68,10 @@ plot_card <- function(data,
 
   # ---------------------------- PLOT MATCH & ANTI-MATCH -----------------------
 
-  p.match <- plot_name(name = data$match,
+  heart_path <- "inst/images/heart.png"
+  broken_heart_path <- "inst/images/broken_heart.png"
+
+  p.match <- plot_name(name = paste0(" <img src='", heart_path, "' width='30'/>", data$match),
                        name_color = style$accent_color,
                        name_size = style$match_size,
                        name_font = style$name_font,
@@ -77,7 +81,7 @@ plot_card <- function(data,
                        box_linewidth = style$box_linewidth,
                        box_radius = style$box_radius_names)
 
-  p.antimatch <- plot_name(name = data$antimatch,
+  p.antimatch <- plot_name(name = paste0(" <img src='", broken_heart_path, "' width='30'/>", data$antimatch),
                            name_color = style$accent_color,
                            name_size = style$match_size,
                            name_font = style$name_font,
