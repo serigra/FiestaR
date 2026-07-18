@@ -1,2 +1,6 @@
 ^FiestaR\.Rproj$
 ^\.Rproj\.user$
+^LICENSE\.md$
+^test\.R$
+^cache$
+^cards$
