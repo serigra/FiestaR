@@ -6,11 +6,14 @@
 #'
 #' @param data Data for a single person including the name of the person as well
 #' as the 5 traits in separate columns. Trait values range between 0 and 10.
+#' @param trait_mean Optional named numeric vector of length 5 specifying the mean values for each trait.
 #' @param trait_color A named character vector of length 5 specifying the colors for
 #'   each trait. Default colors are: red ("#D7263D") for Adventurer, teal
 #'   ("#1B9AAA") for Optimist, yellow ("#F4D35E") for Dreamer, purple
 #'   ("#6A4C93") for Hipster, and green ("#3F784C") for Nerd.
-#' @param trait_size Numeric value controlling the size of the trait labels. Default is 14.
+#' @param trait_size Numeric value controlling the size of the trait labels.
+#' @param trait_point_color Color for the point indicating the trait value.
+#' @param trait_value_color Color for the text label on the point indicating the trait value.
 #' @param add_box Logical. If \code{TRUE} (default), wraps the plot in a
 #'   decorative box using \code{plot_box()}.
 #' @param ... Additional arguments passed to \code{box_plot()} when
@@ -26,11 +29,14 @@
 
 plot_trait <- function(
     data,
+    trait_mean = NULL,
     trait_color = c(Adventurer = "#D7263D",
                      Optimist = "#1B9AAA",
                      Dreamer = "#F4D35E",
                      Hipster = "#6A4C93",
                      Nerd = "#3F784C"),
+    trait_point_color = "#235347",
+    trait_value_color = "white",
     trait_size = 14,
     add_box = TRUE,
     ...
@@ -54,6 +60,16 @@ plot_trait <- function(
     )
   }
 
+  # NEW: validate trait_mean if supplied
+  if (!is.null(trait_mean)) {
+    if (is.null(names(trait_mean)) || !all(names(trait_mean) %in% trait_names)) {
+      stop(
+        "trait_mean must be a named numeric vector with names matching trait names in the input data.\n ",
+        "Trait names in input data: ", paste(trait_names, collapse = ", ")
+      )
+    }
+  }
+
   # ------------------------------ PREPARE DATA --------------------------------
 
   d.traits <- data |>
@@ -61,6 +77,14 @@ plot_trait <- function(
     dplyr::mutate(
       trait = factor(.data$trait, levels = trait_names)
     )
+
+  # NEW: prepare mean data (only for traits present in trait_mean)
+  if (!is.null(trait_mean)) {
+    d.means <- data.frame(
+      trait = factor(names(trait_mean), levels = trait_names),
+      value = as.numeric(trait_mean)
+    )
+  }
 
   d.bar_segments <- d.traits |>
     dplyr::rowwise() |>
@@ -97,17 +121,53 @@ plot_trait <- function(
     ggplot2::geom_point(
       data = d.traits,
       ggplot2::aes(x = .data$value, y = .data$trait),
-      shape = 21, size = 6, stroke = 1.6, color = "grey50", fill = "grey80") +
+      shape = 21, size = 7, stroke = 1.6, fill = trait_point_color, color = "white" #, fill = "grey80"
+      ) +
 
     # 5. add text to value dot
     ggplot2::geom_text(
       data = d.traits,
       ggplot2::aes(x = .data$value, y = .data$trait,
-                   label = round(.data$value, 1), color = .data$trait),
-      vjust = 0.4, hjust = -2.4, size = 3.7, fontface = "bold") +
+                   label = round(.data$value, 1)#, color = .data$trait
+                   ),
+      vjust = 0.5, hjust = 0.55, size = 3.2, fontface = "bold", color = trait_value_color)
 
-    # colors & format
+    #6.  overlay mean diamonds, if supplied
+    if (!is.null(trait_mean)) {
+
+      col_dot <-monochromeR::generate_palette("#235347", "go_lighter", 5)[4]
+
+      p.sliders <- p.sliders +
+      ggplot2::geom_point(
+        data = d.means,
+        ggplot2::aes(x = .data$value, y = .data$trait),
+        shape = 21, size = 3, stroke = 1, color = col_dot, fill = "transparent"
+        )
+
+      # --- small legend in bottom-right ---
+      # use numeric y so we can place it slightly below the lowest trait
+      y_num <- as.numeric(min(data[1, trait_names])) # lowest trait value]))
+
+      p.sliders <- p.sliders +
+        ggplot2::annotate(
+          "point",
+          x = 9.6, y = y_num - 2,
+          shape = 21, size = 3, stroke = 1,
+          color = col_dot, fill = "transparent"
+        ) +
+        ggplot2::annotate(
+          "text",
+          x = 9.3, y = y_num - 2,
+          label = "overall mean",
+          hjust = 1, vjust = 0.5,
+          size = 3
+        )
+    }
+
+  # add colors & format
+  p.sliders <- p.sliders +
     ggplot2::scale_color_manual(values = trait_color) +
+    ggplot2::scale_fill_manual(values = trait_color) +
     ggplot2::scale_alpha_continuous(range = c(0.05, 1)) +
     ggplot2::labs(x = NULL, y = NULL) +
     ggplot2::coord_cartesian(clip = "off") +
@@ -119,7 +179,7 @@ plot_trait <- function(
       panel.grid = ggplot2::element_blank(),
       axis.text.y = ggplot2::element_text(face = "bold"),
       axis.text.x = ggplot2::element_blank(),
-      plot.margin = ggplot2::margin(15, 15, 15, 15)
+      plot.margin = ggplot2::margin(10, 15, 10, 15)
     )
 
   # ------------------------------ ADD BOX -------------------------------------
@@ -129,7 +189,7 @@ plot_trait <- function(
     p.box <- plot_box(...)
 
     p.sliders <- p.box +
-      patchwork::inset_element(p.sliders, left = 0.04, bottom = 0.01, right = 0.96, top = 0.99)
+      patchwork::inset_element(p.sliders, left = 0.04, bottom = 0.04, right = 0.96, top = 0.96)
 
   }
 

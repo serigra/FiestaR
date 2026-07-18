@@ -6,8 +6,11 @@
 \usage{
 plot_trait(
   data,
+  trait_mean = NULL,
   trait_color = c(Adventurer = "#D7263D", Optimist = "#1B9AAA", Dreamer = "#F4D35E",
     Hipster = "#6A4C93", Nerd = "#3F784C"),
+  trait_point_color = "#235347",
+  trait_value_color = "white",
   trait_size = 14,
   add_box = TRUE,
   ...
@@ -17,12 +20,18 @@ plot_trait(
 \item{data}{Data for a single person including the name of the person as well
 as the 5 traits in separate columns. Trait values range between 0 and 10.}
 
+\item{trait_mean}{Optional named numeric vector of length 5 specifying the mean values for each trait.}
+
 \item{trait_color}{A named character vector of length 5 specifying the colors for
 each trait. Default colors are: red ("#D7263D") for Adventurer, teal
 ("#1B9AAA") for Optimist, yellow ("#F4D35E") for Dreamer, purple
 ("#6A4C93") for Hipster, and green ("#3F784C") for Nerd.}
 
-\item{trait_size}{Numeric value controlling the size of the trait labels. Default is 14.}
+\item{trait_point_color}{Color for the point indicating the trait value.}
+
+\item{trait_value_color}{Color for the text label on the point indicating the trait value.}
+
+\item{trait_size}{Numeric value controlling the size of the trait labels.}
 
 \item{add_box}{Logical. If \code{TRUE} (default), wraps the plot in a
 decorative box using \code{plot_box()}.}

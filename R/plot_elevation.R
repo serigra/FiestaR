@@ -131,12 +131,12 @@ plot_elevation <- function(data,
                x = 0.5, y = 0.5,
                label = sprintf('atop(Delta~Altitude, bold("%s"))', delta_elevation),
                parse = TRUE,
-               size = 5,
+               size = 4,
                color = color_profile_dark) +
       .theme.default
 
     p.elev.delta <- p.elevation + p.delta +
-      patchwork::plot_layout(widths = ggplot2::unit(c(4, 1), c("null")))
+      patchwork::plot_layout(widths = ggplot2::unit(c(4.2, 0.8), c("null")))
 
     p.elevation <- p.box +
       patchwork::inset_element(p.elev.delta, left = 0.005, bottom = 0, right = 0.93, top = 1)

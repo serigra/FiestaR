@@ -7,6 +7,7 @@
 plot_card(
   data,
   trait_cols = c("Hipster", "Nerd", "Dreamer", "Optimist", "Adventurer"),
+  trait_mean = NULL,
   style = default_card_style()
 )
 }
@@ -16,6 +17,8 @@ the five trait columns, \code{data_elevation} (list-column), \code{match}, and
 \code{antimatch}.}
 
 \item{trait_cols}{Character vector naming the trait columns in \code{data}.}
+
+\item{trait_mean}{Optional named numeric vector of length 5 specifying the mean values for each trait.}
 
 \item{style}{A list of shared styling parameters (see \code{default_card_style()}).}
 }

@@ -3,7 +3,9 @@
 default_card_style <- function() {
   list(
     accent_color = "#235347",
-    trait_color = rep(c("#235347"), 5),
+    trait_color = rep(c("#7B9790"), 5),
+    trait_point_color = "#4E756B",
+    value_color = "white",
     # trait_color = c(
     #   Hipster    = "#D7263D",
     #   Nerd       = "#1B9AAA",
@@ -11,11 +13,14 @@ default_card_style <- function() {
     #   Optimist   = "#6A4C93",
     #   Adventurer = "#3F784C"
     # ),
-    name_size = 12,
+    name_size = 13,
+    name_font = "quicksand",
+    match_size = 9,
     add_box = TRUE,
     box_background = "#f8f8f6",
     box_linewidth = 0.7,
-    box_radius_names = 0.25,
-    box_radius_traits = 0.1
+    box_radius_elevation = 0.15,
+    box_radius_traits = 0.06,
+    box_radius_names = 0.25
   )
 }
