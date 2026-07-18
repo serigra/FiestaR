@@ -7,7 +7,9 @@
 plot_box(
   box_color = "darkgrey",
   box_background = "#f8f8f6",
-  box_linewidth_cm = 0.1
+  box_linewidth = 2,
+  box_radius = 0.1,
+  box_expand = 0.02
 )
 }
 \arguments{
@@ -17,7 +19,11 @@ Default is "darkgrey".}
 \item{box_background}{Character string specifying the background color
 of the box. Default is "#f8f8f6" (light grey).}
 
-\item{box_linewidth_cm}{Linewidth of box in cm.}
+\item{box_linewidth}{Linewidth of box.}
+
+\item{box_radius}{Radius of rounded corners.}
+
+\item{box_expand}{Expansion of box.}
 }
 \value{
 A ggplot object containing a box plot with rounded corners.
@@ -35,7 +41,7 @@ plot_box()
 \dontrun{
 plot_box(box_color = "steelblue",
          box_background = "white",
-         box_linewidth_cm = 0.01)
+         box_linewidth = 0.01)
 }
 
 }

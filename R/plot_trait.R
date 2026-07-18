@@ -114,6 +114,8 @@ plot_trait <- function(
     ggplot2::theme_minimal(base_size = trait_size) +
     ggplot2::theme(
       legend.position = "none",
+      panel.background = ggplot2::element_rect(fill = "transparent", color = NA),
+      plot.background = ggplot2::element_rect(fill = "transparent", color = NA),
       panel.grid = ggplot2::element_blank(),
       axis.text.y = ggplot2::element_text(face = "bold"),
       axis.text.x = ggplot2::element_blank(),
@@ -127,7 +129,7 @@ plot_trait <- function(
     p.box <- plot_box(...)
 
     p.sliders <- p.box +
-      patchwork::inset_element(p.sliders, left = 0.04, bottom = 0, right = 0.96, top = 1)
+      patchwork::inset_element(p.sliders, left = 0.04, bottom = 0.01, right = 0.96, top = 0.99)
 
   }
 

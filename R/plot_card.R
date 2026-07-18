@@ -31,10 +31,11 @@ plot_card <- function(data,
   p.name <- plot_name(name = data$name,
                       name_color = style$accent_color,
                       name_size = style$name_size,
-                      name_margin = style$name_margin,
-                      add_box = style$add_box,
+                      add_box = FALSE,
                       box_color = style$accent_color,
-                      box_linewidth_cm = style$box_linewidth_cm)
+                      box_background = style$box_background,
+                      box_linewidth = style$box_linewidth,
+                      box_radius = style$box_radius_names)
 
   # ------------------------ PlOT ELEVATION PROFILE ----------------------------
 
@@ -43,7 +44,9 @@ plot_card <- function(data,
     color_profile  = style$accent_color,
     add_text = TRUE,
     add_box  = style$add_box,
-    box_linewidth_cm = style$box_linewidth_cm,
+    box_color = style$accent_color,
+    box_linewidth = style$box_linewidth,
+    box_radius = style$box_radius_names,
     text_size = 2.5
   )
 
@@ -52,19 +55,29 @@ plot_card <- function(data,
     trait_color = style$trait_color,
     add_box = style$add_box,
     box_color = style$accent_color,
-    box_linewidth_cm = style$box_linewidth_cm
+    box_linewidth = style$box_linewidth,
+    box_radius = style$box_radius_traits
   )
 
   # ---------------------------- PLOT MATCH & ANTI-MATCH -----------------------
 
   p.match <- plot_name(name = paste(emoji::emoji("heart-with-arrow"), data$match),
+                       name_color = style$accent_color,
+                       name_size = style$name_size,
                        add_box = style$add_box,
                        box_color = style$accent_color,
-                       box_linewidth_cm = style$box_linewidth_cm)
+                       box_background = style$box_background,
+                       box_linewidth = style$box_linewidth,
+                       box_radius = style$box_radius_names)
+
   p.antimatch <- plot_name(name = paste(emoji::emoji("broken-heart"), data$antimatch),
+                           name_color = style$accent_color,
+                           name_size = style$name_size,
                            add_box = style$add_box,
                            box_color = style$accent_color,
-                           box_linewidth_cm = style$box_linewidth_cm)
+                           box_background = style$box_background,
+                           box_linewidth = style$box_linewidth,
+                           box_radius = style$box_radius_names)
 
   p.match.antimatch <- p.match / p.antimatch +
     patchwork::plot_layout(heights = ggplot2::unit(c(1, 1), c("null")))
