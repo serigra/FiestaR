@@ -3,10 +3,10 @@
 default_card_style <- function() {
   list(
     accent_color = "#235347",
-    trait_color = rep(c("#7B9790"), 5),
-    trait_size = 15,
+    trait_bar_color = rep(c("#7B9790"), 5),
+    trait_text_size = 15,
     trait_point_color = "#4E756B",
-    value_color = "white",
+    trait_value_color = "white",
     name_size = 13,
     name_font = "quicksand",
     match_size = 9,

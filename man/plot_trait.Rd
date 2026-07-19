@@ -7,13 +7,13 @@
 plot_trait(
   data,
   trait_mean = NULL,
-  trait_color = c(Adventurer = "#D7263D", Optimist = "#1B9AAA", Dreamer = "#F4D35E",
+  trait_bar_color = c(Adventurer = "#D7263D", Optimist = "#1B9AAA", Dreamer = "#F4D35E",
     Hipster = "#6A4C93", Nerd = "#3F784C"),
   trait_point_color = "#235347",
   trait_value_color = "white",
   trait_text_font = "quicksand",
   trait_text_color = "#235347",
-  trait_size = 14,
+  trait_text_size = 14,
   add_box = TRUE,
   ...
 )
@@ -24,7 +24,7 @@ as the 5 traits in separate columns. Trait values range between 0 and 10.}
 
 \item{trait_mean}{Optional named numeric vector of length 5 specifying the mean values for each trait.}
 
-\item{trait_color}{A named character vector of length 5 specifying the colors for
+\item{trait_bar_color}{A named character vector of length 5 specifying the colors for
 each trait. Default colors are: red ("#D7263D") for Adventurer, teal
 ("#1B9AAA") for Optimist, yellow ("#F4D35E") for Dreamer, purple
 ("#6A4C93") for Hipster, and green ("#3F784C") for Nerd.}
@@ -37,7 +37,7 @@ each trait. Default colors are: red ("#D7263D") for Adventurer, teal
 
 \item{trait_text_color}{Character string specifying the color for the trait labels.}
 
-\item{trait_size}{Numeric value controlling the size of the trait labels.}
+\item{trait_text_size}{Numeric value controlling the size of the trait labels.}
 
 \item{add_box}{Logical. If \code{TRUE} (default), wraps the plot in a
 decorative box using \code{plot_box()}.}

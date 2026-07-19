@@ -61,7 +61,7 @@ plot_name <- function(name,
     p.box <- plot_box(...)
 
     p.name <- p.box +  # put p.name exactly in the middle of the box
-      patchwork::inset_element(p.name, left = 0.04, bottom = 0, right = 0.96, top = 1)
+      patchwork::inset_element(p.name, left = 0.04, bottom = 0.04, right = 0.96, top = 0.96)
 
   }
 

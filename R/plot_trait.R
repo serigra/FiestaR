@@ -7,11 +7,11 @@
 #' @param data Data for a single person including the name of the person as well
 #' as the 5 traits in separate columns. Trait values range between 0 and 10.
 #' @param trait_mean Optional named numeric vector of length 5 specifying the mean values for each trait.
-#' @param trait_color A named character vector of length 5 specifying the colors for
+#' @param trait_bar_color A named character vector of length 5 specifying the colors for
 #'   each trait. Default colors are: red ("#D7263D") for Adventurer, teal
 #'   ("#1B9AAA") for Optimist, yellow ("#F4D35E") for Dreamer, purple
 #'   ("#6A4C93") for Hipster, and green ("#3F784C") for Nerd.
-#' @param trait_size Numeric value controlling the size of the trait labels.
+#' @param trait_text_size Numeric value controlling the size of the trait labels.
 #' @param trait_text_font Character string specifying the font family for the trait labels.
 #' @param trait_text_color Character string specifying the color for the trait labels.
 #' @param trait_point_color Color for the point indicating the trait value.
@@ -32,7 +32,7 @@
 plot_trait <- function(
     data,
     trait_mean = NULL,
-    trait_color = c(Adventurer = "#D7263D",
+    trait_bar_color = c(Adventurer = "#D7263D",
                      Optimist = "#1B9AAA",
                      Dreamer = "#F4D35E",
                      Hipster = "#6A4C93",
@@ -41,7 +41,7 @@ plot_trait <- function(
     trait_value_color = "white",
     trait_text_font = "quicksand",
     trait_text_color = "#235347",
-    trait_size = 14,
+    trait_text_size = 14,
     add_box = TRUE,
     ...
   ){
@@ -55,12 +55,12 @@ plot_trait <- function(
   trait_names <- names(data)[names(data) != "name"]
 
   # check whether color_traits is a named vector
-  if(!all(attributes(trait_color)$names %in% trait_names)) {
-    missing_traits <- setdiff(names(trait_color), trait_names)
+  if(!all(attributes(trait_bar_color)$names %in% trait_names)) {
+    missing_traits <- setdiff(names(trait_bar_color), trait_names)
     stop(
       "color_traits must be a named vector with names matching trait names in the input data.\n ",
       "Trait names in input data: ", paste(trait_names, collapse = ", "), ".\n",
-      "Unknown trait(s) in trait_color: ", paste(missing_traits, collapse = ", ")
+      "Unknown trait(s) in trait_bar_color: ", paste(missing_traits, collapse = ", ")
     )
   }
 
@@ -80,7 +80,12 @@ plot_trait <- function(
     tidyr::pivot_longer(cols = -.data$name, names_to = 'trait') |>
     dplyr::mutate(
       trait = factor(.data$trait, levels = trait_names)
-    )
+    ) |>
+    # add randomly between -0.3 and +0.3 to each value to get some more variation in numbers
+    dplyr::mutate(value = value + (sample(c(0.1, 0.2, 0.3), dplyr::n(), replace = TRUE) *
+        sample(c(-1, 1), dplyr::n(), replace = TRUE)
+    ))
+
 
   # NEW: prepare mean data (only for traits present in trait_mean)
   if (!is.null(trait_mean)) {
@@ -132,7 +137,7 @@ plot_trait <- function(
     ggplot2::geom_text(
       data = d.traits,
       ggplot2::aes(x = .data$value, y = .data$trait,
-                   label = paste0(round(.data$value, 1), '0%')#, color = .data$trait
+                   label = paste0(round(.data$value, 1)*10, '%') # show in percent
                    ),
       vjust = 0.5, hjust = 0.50, size = 3.2, fontface = "bold", color = trait_value_color)
 
@@ -170,12 +175,12 @@ plot_trait <- function(
 
   # add colors & format
   p.sliders <- p.sliders +
-    ggplot2::scale_color_manual(values = trait_color) +
-    ggplot2::scale_fill_manual(values = trait_color) +
+    ggplot2::scale_color_manual(values = trait_bar_color) +
+    ggplot2::scale_fill_manual(values = trait_bar_color) +
     ggplot2::scale_alpha_continuous(range = c(0.05, 1)) +
     ggplot2::labs(x = NULL, y = NULL) +
     ggplot2::coord_cartesian(clip = "off") +
-    ggplot2::theme_minimal(base_size = trait_size) +
+    ggplot2::theme_minimal(base_size = trait_text_size) +
     ggplot2::theme(
       legend.position = "none",
       panel.background = ggplot2::element_rect(fill = "transparent", color = NA),

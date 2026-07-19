@@ -12,7 +12,7 @@ plot_elevation(
   max_ylim = 1100,
   add_text = TRUE,
   add_box = TRUE,
-  text_size = 3.7,
+  elevation_text_size = 3.7,
   .ggplot = NULL,
   ...
 )
@@ -36,7 +36,7 @@ in meters (default: 1100).}
 
 \item{add_box}{Logical indicating whether to add a box around the plot (default: TRUE).}
 
-\item{text_size}{Numeric value specifying the size of the text labels (default: 3.7).}
+\item{elevation_text_size}{Numeric value specifying the size of the text labels (default: 3.7).}
 
 \item{.ggplot}{Additional ggplot arguments.}
 

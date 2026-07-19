@@ -14,7 +14,7 @@
 #' @param add_text Logical indicating whether to add a text labels to the plot (default: TRUE).
 #' @param add_box Logical indicating whether to add a box around the plot (default: TRUE).
 #' @param color_profile Character string specifying the color for the elevation profile line (default: "#235347").
-#' @param text_size Numeric value specifying the size of the text labels (default: 3.7).
+#' @param elevation_text_size Numeric value specifying the size of the text labels (default: 3.7).
 #' @param .ggplot Additional ggplot arguments.
 #' @param ... further arguments for [plot_box()] function
 #'
@@ -37,16 +37,16 @@ plot_elevation <- function(data = NULL,
                            max_ylim = 1100,
                            add_text = TRUE,
                            add_box = TRUE,
-                           text_size = 3.7,
+                           elevation_text_size = 3.7,
                            .ggplot = NULL,
                            ...
                            ) {
 
   # ------------------------- if elevation data is MISSING ---------------------
 
-  if (is.na(data)) {
+  if (all(is.na(data))) {
 
-    img_path <- system.file("images", "flight.png", package = "FiestaR")
+    img_path <- system.file("images", "flight-green.png", package = "FiestaR")
 
     img <- png::readPNG(img_path)
 
@@ -61,8 +61,8 @@ plot_elevation <- function(data = NULL,
       p.box <- plot_box(...)
       p.placeholder <- p.box +
         patchwork::inset_element(p.flight,
-                                 left = 0.1, bottom = 0,
-                                 right = 0.9, top = 1)
+                                 left = 0.1, bottom = 0.09,
+                                 right = 0.9, top = 0.91)
     }
 
     return(p.placeholder)
@@ -129,13 +129,13 @@ plot_elevation <- function(data = NULL,
                                       y = .data$elevation,
                                       label = paste0(origin_label, '\n', round(.data$elevation), ' m')),
                                       vjust = -0.3 , hjust = 0.1,
-                                      color = color_profile, size = text_size) +
+                                      color = color_profile, size = elevation_text_size) +
       ggplot2::geom_text(data = data |> utils::tail(1),
                          ggplot2::aes(x = .data$cumulative_distance,
                                       y = .data$elevation,
                                       label = paste0(destination_label, '\n', round(.data$elevation), ' m')),
                                       vjust = -0.3 , hjust = 0.8,
-                                      color = color_profile, size = text_size) +
+                                      color = color_profile, size = elevation_text_size) +
       ggplot2::ylim(range_elevation$plot_min, range_elevation$plot_max) +
       ggplot2::coord_cartesian(clip = 'off')
 
