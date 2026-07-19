@@ -8,7 +8,8 @@ plot_card(
   data,
   trait_cols = c("Hipster", "Nerd", "Dreamer", "Optimist", "Adventurer"),
   trait_mean = NULL,
-  style = default_card_style()
+  style = default_card_style(),
+  save_file = FALSE
 )
 }
 \arguments{
@@ -21,6 +22,8 @@ the five trait columns, \code{data_elevation} (list-column), \code{match}, and
 \item{trait_mean}{Optional named numeric vector of length 5 specifying the mean values for each trait.}
 
 \item{style}{A list of shared styling parameters (see \code{default_card_style()}).}
+
+\item{save_file}{Boolean indicating whether to save the created card as png. Default is FALSE.}
 }
 \value{
 A patchwork object: the complete stacked card.

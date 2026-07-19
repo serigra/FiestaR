@@ -2,6 +2,7 @@
 
 export(default_card_style)
 export(get_elevation_data)
+export(get_match_antimatch)
 export(plot_card)
 export(plot_elevation)
 export(plot_name)

@@ -64,7 +64,7 @@ plot_trait <- function(
     )
   }
 
-  # NEW: validate trait_mean if supplied
+  # validate trait_mean if supplied
   if (!is.null(trait_mean)) {
     if (is.null(names(trait_mean)) || !all(names(trait_mean) %in% trait_names)) {
       stop(
@@ -80,14 +80,9 @@ plot_trait <- function(
     tidyr::pivot_longer(cols = -.data$name, names_to = 'trait') |>
     dplyr::mutate(
       trait = factor(.data$trait, levels = trait_names)
-    ) |>
-    # add randomly between -0.3 and +0.3 to each value to get some more variation in numbers
-    dplyr::mutate(value = value + (sample(c(0.1, 0.2, 0.3), dplyr::n(), replace = TRUE) *
-        sample(c(-1, 1), dplyr::n(), replace = TRUE)
-    ))
+    )
 
-
-  # NEW: prepare mean data (only for traits present in trait_mean)
+  # prepare mean data (only for traits present in trait_mean)
   if (!is.null(trait_mean)) {
     d.means <- data.frame(
       trait = factor(names(trait_mean), levels = trait_names),

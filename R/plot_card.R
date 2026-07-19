@@ -7,9 +7,10 @@
 #' @param data A one-row data frame for a single guest, containing `name`,
 #'   the five trait columns, `data_elevation` (list-column), `match`, and
 #'   `antimatch`.
-#'@param trait_mean Optional named numeric vector of length 5 specifying the mean values for each trait.
+#' @param trait_mean Optional named numeric vector of length 5 specifying the mean values for each trait.
 #' @param trait_cols Character vector naming the trait columns in `data`.
 #' @param style A list of shared styling parameters (see `default_card_style()`).
+#' @param save_file Boolean indicating whether to save the created card as png. Default is FALSE.
 #'
 #' @return A patchwork object: the complete stacked card.
 #'
@@ -17,7 +18,8 @@
 plot_card <- function(data,
                       trait_cols = c("Hipster", "Nerd", "Dreamer", "Optimist", "Adventurer"),
                       trait_mean = NULL,
-                      style = default_card_style()) {
+                      style = default_card_style(),
+                      save_file = FALSE) {
 
   # ----------------------------- CHECK ARGUMENTS ------------------------------
 
@@ -106,7 +108,23 @@ plot_card <- function(data,
                        box_background = style$accent_color,
                        box_radius = 0.05)
 
-  p.outbox +
+  p.out <- p.outbox +
     patchwork::inset_element(p.card, left = 0.02, bottom = 0.05, right = 0.98, top = 0.95)
+
+  # -------------------- FINAL PLOT with green background box ------------------
+
+  if(save_file){
+
+    showtext::showtext_opts(dpi = 350) # for plotting when saved as png
+
+    ggplot2::ggsave(
+      filename = paste0("cards/card_", data$name, ".png"),
+      plot = p.out,
+      dpi = 350, width = 5.6, height = 8.5, bg = "transparent"
+    )
+  }
+
+  showtext::showtext_opts(dpi = 96) # default, for plotting in RStudio Viewer
+  p.out
 
 }
