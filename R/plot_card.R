@@ -115,12 +115,15 @@ plot_card <- function(data,
 
   if(save_file){
 
-    showtext::showtext_opts(dpi = 350) # for plotting when saved as png
+    showtext::showtext_opts(dpi = 450) # for plotting when saved as png/jpg
 
     ggplot2::ggsave(
-      filename = paste0("cards/card_", data$name, ".png"),
+      filename = paste0("cards/card_", data$name, ".jpg"),
       plot = p.out,
-      dpi = 350, width = 5.6, height = 8.5, bg = "transparent"
+      dpi = 450,
+      # width = 5.6, height = 9.6,
+      width = 70, height = 120, unit = "mm", scale = 2.0,
+      bg = "transparent"
     )
   }
 
